@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register – CarService</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <h1>🔧 CarService</h1>
+            <p>Create your account</p>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+        <form th:action="@{/auth/register}" method="post">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" placeholder="10-digit phone number">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Min 6 characters" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.75rem;">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a th:href="@{/auth/login}">Sign in</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

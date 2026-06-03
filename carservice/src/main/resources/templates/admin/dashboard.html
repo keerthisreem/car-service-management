@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard – CarService</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <span style="background:rgba(232,133,74,0.15); color:var(--accent); padding:0.3rem 0.75rem; border-radius:50px; font-size:0.8rem; font-weight:700;">ADMIN</span>
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout" style="margin-left:0.5rem;">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}" class="active">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}">📅 Appointments</a>
+            <a th:href="@{/admin/users}">👥 Users</a>
+            <a th:href="@{/admin/vehicles}">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Admin Dashboard</div>
+                <div class="page-subtitle">Overview of all service centre activity</div>
+            </div>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-icon blue">👥</div>
+                <div class="stat-value" th:text="${totalUsers}">0</div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon orange">🚗</div>
+                <div class="stat-value" th:text="${totalVehicles}">0</div>
+                <div class="stat-label">Total Vehicles</div>
+            </div>
+            <div class="stat-card yellow">
+                <div class="stat-icon yellow">⏳</div>
+                <div class="stat-value" th:text="${pendingCount}">0</div>
+                <div class="stat-label">Pending Approvals</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon orange">🔧</div>
+                <div class="stat-value" th:text="${inProgressCount}">0</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-value" th:text="${completedCount}">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon blue">📅</div>
+                <div class="stat-value" th:text="${totalAppointments}">0</div>
+                <div class="stat-label">Total Appointments</div>
+            </div>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">All Appointments</div>
+                <a th:href="@{/admin/appointments}" class="btn btn-outline btn-sm">Manage All</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${recentAppointments.isEmpty()}">
+                            <td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">No appointments yet.</td>
+                        </tr>
+                        <tr th:each="appt : ${recentAppointments}">
+                            <td th:text="${appt.id}"></td>
+                            <td th:text="${appt.vehicle.owner.name}"></td>
+                            <td th:text="${appt.vehicle.make + ' ' + appt.vehicle.model}"></td>
+                            <td th:text="${appt.serviceType.name}"></td>
+                            <td th:text="${appt.appointmentDate}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="'badge-' + ${appt.status.name().toLowerCase()}"
+                                      th:text="${appt.status}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Vehicles – CarService</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/user/dashboard}">🔧 <span>CarService</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Menu</div>
+            <a th:href="@{/user/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/user/vehicles}" class="active">🚗 My Vehicles</a>
+            <a th:href="@{/user/appointments}">📅 Appointments</a>
+            <a th:href="@{/user/services}">⚙️ Services</a>
+            <a th:href="@{/user/profile}">👤 My Profile</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">My Vehicles</div>
+                <div class="page-subtitle">Manage your registered vehicles</div>
+            </div>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Add Vehicle Form -->
+        <div class="form-panel mb-3">
+            <div class="card-title mb-2">➕ Add New Vehicle</div>
+            <form th:action="@{/user/vehicles/add}" method="post">
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Make (Brand)</label>
+                        <input type="text" name="make" class="form-control" placeholder="e.g. Maruti, Honda" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" name="model" class="form-control" placeholder="e.g. Swift, City" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" class="form-control" placeholder="e.g. 2020" min="1990" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Registration Number</label>
+                        <input type="text" name="registrationNumber" class="form-control" placeholder="e.g. TN33AB1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Color</label>
+                        <input type="text" name="color" class="form-control" placeholder="e.g. White">
+                    </div>
+                    <div class="form-group" style="display:flex; align-items:flex-end;">
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Add Vehicle</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Vehicle List -->
+        <div class="vehicle-cards">
+            <div th:if="${vehicles.isEmpty()}" style="color:var(--text-muted); font-size:0.9rem; padding:1rem;">
+                No vehicles added yet. Add your first vehicle above!
+            </div>
+            <div class="vehicle-card" th:each="v : ${vehicles}">
+                <h3 th:text="${v.make + ' ' + v.model}"></h3>
+                <div class="reg" th:text="${v.registrationNumber}"></div>
+                <div class="vehicle-meta">
+                    <div>📅 Year: <span th:text="${v.year}"></span></div>
+                    <div th:if="${v.color}">🎨 Color: <span th:text="${v.color}"></span></div>
+                </div>
+                <div style="margin-top:1rem;">
+                    <a th:href="@{'/user/vehicles/delete/' + ${v.id}}"
+                       onclick="return confirm('Remove this vehicle?')"
+                       class="btn btn-danger btn-sm">Remove</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

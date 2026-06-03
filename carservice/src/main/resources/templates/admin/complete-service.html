@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Service – Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}" class="active">📅 Appointments</a>
+            <a th:href="@{/admin/users}">👥 Users</a>
+            <a th:href="@{/admin/vehicles}">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Complete Service</div>
+                <div class="page-subtitle">Fill in the service details to mark as completed</div>
+            </div>
+            <a th:href="@{/admin/appointments}" class="btn btn-outline">← Back</a>
+        </div>
+
+        <!-- Appointment Summary -->
+        <div class="card mb-3">
+            <div class="card-title mb-2">Appointment Details</div>
+            <div class="grid-2">
+                <div>
+                    <div class="form-label">Customer</div>
+                    <div th:text="${appointment.vehicle.owner.name}" style="font-weight:600;"></div>
+                </div>
+                <div>
+                    <div class="form-label">Vehicle</div>
+                    <div th:text="${appointment.vehicle.make + ' ' + appointment.vehicle.model + ' (' + appointment.vehicle.registrationNumber + ')'}"
+                         style="font-weight:600;"></div>
+                </div>
+                <div>
+                    <div class="form-label">Service Type</div>
+                    <div th:text="${appointment.serviceType.name}" style="font-weight:600;"></div>
+                </div>
+                <div>
+                    <div class="form-label">Booked Date</div>
+                    <div th:text="${appointment.appointmentDate}" style="font-weight:600;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete Form -->
+        <div class="card" style="max-width:600px;">
+            <div class="card-title mb-2">✅ Service Completion Form</div>
+            <form th:action="@{'/admin/appointments/' + ${appointment.id} + '/complete'}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Work Description *</label>
+                    <textarea name="workDescription" class="form-control" rows="3"
+                              placeholder="Describe the work done..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parts Replaced</label>
+                    <input type="text" name="partsReplaced" class="form-control"
+                           placeholder="e.g. Oil filter, Air filter">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Cost (₹) *</label>
+                    <input type="number" name="totalCost" class="form-control"
+                           th:value="${appointment.serviceType.estimatedCost}"
+                           step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mechanic Notes</label>
+                    <textarea name="mechanicNotes" class="form-control" rows="2"
+                              placeholder="Any additional notes for the customer..."></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-success">Mark as Completed</button>
+                    <a th:href="@{/admin/appointments}" class="btn btn-outline">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

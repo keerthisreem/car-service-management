@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicles – Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}">📅 Appointments</a>
+            <a th:href="@{/admin/users}">👥 Users</a>
+            <a th:href="@{/admin/vehicles}" class="active">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">All Vehicles</div>
+                <div class="page-subtitle">Every vehicle registered in the system</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Registration No.</th>
+                            <th>Make & Model</th>
+                            <th>Year</th>
+                            <th>Color</th>
+                            <th>Owner</th>
+                            <th>Owner Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${vehicles.isEmpty()}">
+                            <td colspan="7" style="text-align:center; color:var(--text-muted); padding:2rem;">No vehicles registered yet.</td>
+                        </tr>
+                        <tr th:each="v, stat : ${vehicles}">
+                            <td th:text="${stat.count}"></td>
+                            <td style="color:var(--accent); font-weight:700;" th:text="${v.registrationNumber}"></td>
+                            <td th:text="${v.make + ' ' + v.model}"></td>
+                            <td th:text="${v.year}"></td>
+                            <td th:text="${v.color != null ? v.color : '-'}"></td>
+                            <td th:text="${v.owner.name}"></td>
+                            <td style="color:var(--text-muted);" th:text="${v.owner.email}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

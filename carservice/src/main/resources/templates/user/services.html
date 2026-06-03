@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Services – CarService</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/user/dashboard}">🔧 <span>CarService</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Menu</div>
+            <a th:href="@{/user/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/user/vehicles}">🚗 My Vehicles</a>
+            <a th:href="@{/user/appointments}">📅 Appointments</a>
+            <a th:href="@{/user/services}" class="active">⚙️ Services</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Available Services</div>
+                <div class="page-subtitle">Browse all service types and estimated costs</div>
+            </div>
+            <a th:href="@{/user/appointments}" class="btn btn-primary">+ Book Now</a>
+        </div>
+
+        <div class="service-grid">
+            <div class="service-card" th:each="s : ${serviceTypes}">
+                <h3 th:text="${s.name}"></h3>
+                <p th:text="${s.description}"></p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="cost" th:text="'₹' + ${s.estimatedCost}"></div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);"
+                         th:text="'⏱ ' + ${s.estimatedDurationHours} + 'h'"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

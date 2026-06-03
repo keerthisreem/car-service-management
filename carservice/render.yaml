@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: carservice
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: carservice-db
+          property: connectionString
+
+databases:
+  - name: carservice-db
+    databaseName: carservice
+    plan: free

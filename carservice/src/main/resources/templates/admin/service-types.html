@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Service Types – Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}">📅 Appointments</a>
+            <a th:href="@{/admin/users}">👥 Users</a>
+            <a th:href="@{/admin/vehicles}">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}" class="active">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Service Types</div>
+                <div class="page-subtitle">Add and manage available service categories</div>
+            </div>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+        <!-- Add Form -->
+        <div class="form-panel mb-3">
+            <div class="card-title mb-2">➕ Add New Service Type</div>
+            <form th:action="@{/admin/service-types/add}" method="post">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Service Name *</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Wheel Alignment" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control" placeholder="Brief description">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estimated Cost (₹) *</label>
+                        <input type="number" name="estimatedCost" class="form-control" placeholder="e.g. 1200" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Est. Duration (hours) *</label>
+                        <input type="number" name="estimatedDurationHours" class="form-control" placeholder="e.g. 2" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Service Type</button>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Est. Cost</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="s, stat : ${serviceTypes}">
+                            <td th:text="${stat.count}"></td>
+                            <td style="font-weight:600;" th:text="${s.name}"></td>
+                            <td style="color:var(--text-muted); font-size:0.85rem;" th:text="${s.description}"></td>
+                            <td th:text="'₹' + ${s.estimatedCost}"></td>
+                            <td th:text="${s.estimatedDurationHours} + 'h'"></td>
+                            <td>
+                                <a th:href="@{'/admin/service-types/delete/' + ${s.id}}"
+                                   onclick="return confirm('Delete this service type?')"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

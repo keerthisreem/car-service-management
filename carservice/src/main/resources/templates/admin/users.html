@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users – Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}">📅 Appointments</a>
+            <a th:href="@{/admin/users}" class="active">👥 Users</a>
+            <a th:href="@{/admin/vehicles}">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Registered Users</div>
+                <div class="page-subtitle">All customer accounts in the system</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="u, stat : ${users}">
+                            <td th:text="${stat.count}"></td>
+                            <td th:text="${u.name}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td th:text="${u.phone != null ? u.phone : '-'}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${u.role.name() == 'ADMIN' ? 'badge-in_progress' : 'badge-approved'}"
+                                      th:text="${u.role}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

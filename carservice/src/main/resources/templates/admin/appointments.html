@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments – Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">🔧 <span>CarService Admin</span></a>
+    <div class="nav-links">
+        <span style="background:rgba(232,133,74,0.15); color:var(--accent); padding:0.3rem 0.75rem; border-radius:50px; font-size:0.8rem; font-weight:700;">ADMIN</span>
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout" style="margin-left:0.5rem;">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Admin Panel</div>
+            <a th:href="@{/admin/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/admin/appointments}" class="active">📅 Appointments</a>
+            <a th:href="@{/admin/users}">👥 Users</a>
+            <a th:href="@{/admin/vehicles}">🚗 Vehicles</a>
+            <a th:href="@{/admin/service-types}">⚙️ Service Types</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Manage Appointments</div>
+                <div class="page-subtitle">Approve, track and complete service appointments</div>
+            </div>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${appointments.isEmpty()}">
+                            <td colspan="8" style="text-align:center; color:var(--text-muted); padding:2rem;">No appointments found.</td>
+                        </tr>
+                        <tr th:each="appt : ${appointments}">
+                            <td th:text="${appt.id}"></td>
+                            <td>
+                                <div th:text="${appt.vehicle.owner.name}"></div>
+                                <div style="font-size:0.75rem; color:var(--text-muted);" th:text="${appt.vehicle.owner.email}"></div>
+                            </td>
+                            <td>
+                                <div th:text="${appt.vehicle.make + ' ' + appt.vehicle.model}"></div>
+                                <div style="font-size:0.75rem; color:var(--accent);" th:text="${appt.vehicle.registrationNumber}"></div>
+                            </td>
+                            <td th:text="${appt.serviceType.name}"></td>
+                            <td th:text="${appt.appointmentDate}"></td>
+                            <td style="max-width:150px; font-size:0.8rem; color:var(--text-muted);"
+                                th:text="${appt.notes != null ? appt.notes : '-'}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="'badge-' + ${appt.status.name().toLowerCase()}"
+                                      th:text="${appt.status}"></span>
+                            </td>
+                            <td>
+                                <div class="flex gap-2" style="flex-wrap:wrap;">
+                                    <!-- Approve -->
+                                    <a th:if="${appt.status.name() == 'PENDING'}"
+                                       th:href="@{'/admin/appointments/' + ${appt.id} + '/status?status=APPROVED'}"
+                                       class="btn btn-info btn-sm">Approve</a>
+
+                                    <!-- Start Work -->
+                                    <a th:if="${appt.status.name() == 'APPROVED'}"
+                                       th:href="@{'/admin/appointments/' + ${appt.id} + '/status?status=IN_PROGRESS'}"
+                                       class="btn btn-primary btn-sm">Start</a>
+
+                                    <!-- Complete -->
+                                    <a th:if="${appt.status.name() == 'IN_PROGRESS'}"
+                                       th:href="@{'/admin/appointments/' + ${appt.id} + '/complete'}"
+                                       class="btn btn-success btn-sm">Complete</a>
+
+                                    <!-- Cancel -->
+                                    <a th:if="${appt.status.name() == 'PENDING' or appt.status.name() == 'APPROVED'}"
+                                       th:href="@{'/admin/appointments/' + ${appt.id} + '/status?status=CANCELLED'}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Cancel this appointment?')">Cancel</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

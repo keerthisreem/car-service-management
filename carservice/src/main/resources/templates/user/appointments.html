@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments – CarService</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/user/dashboard}">🔧 <span>CarService</span></a>
+    <div class="nav-links">
+        <a href="/auth/logout" class="btn btn-outline btn-sm nav-logout">Logout</a>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Menu</div>
+            <a th:href="@{/user/dashboard}">🏠 Dashboard</a>
+            <a th:href="@{/user/vehicles}">🚗 My Vehicles</a>
+            <a th:href="@{/user/appointments}" class="active">📅 Appointments</a>
+            <a th:href="@{/user/services}">⚙️ Services</a>
+            <a th:href="@{/user/profile}">👤 My Profile</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Appointments</div>
+                <div class="page-subtitle">Book and track your service appointments</div>
+            </div>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Book Appointment Form -->
+        <div class="form-panel mb-3">
+            <div class="card-title mb-2">📅 Book New Appointment</div>
+
+            <div th:if="${vehicles.isEmpty()}" class="alert alert-danger">
+                You have no vehicles registered. <a th:href="@{/user/vehicles}" style="color:var(--accent)">Add a vehicle first.</a>
+            </div>
+
+            <form th:if="${!vehicles.isEmpty()}" th:action="@{/user/appointments/book}" method="post">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Select Vehicle</label>
+                        <select name="vehicleId" class="form-select" required>
+                            <option value="">-- Choose Vehicle --</option>
+                            <option th:each="v : ${vehicles}" th:value="${v.id}"
+                                    th:text="${v.make + ' ' + v.model + ' (' + v.registrationNumber + ')'}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Service Type</label>
+                        <select name="serviceTypeId" class="form-select" required>
+                            <option value="">-- Choose Service --</option>
+                            <option th:each="s : ${serviceTypes}" th:value="${s.id}"
+                                    th:text="${s.name + ' (₹' + s.estimatedCost + ')'}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preferred Date</label>
+                        <input type="date" name="appointmentDate" class="form-control" required
+                               id="appointmentDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes (Optional)</label>
+                        <input type="text" name="notes" class="form-control" placeholder="Any specific issue or request">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Book Appointment</button>
+            </form>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">All Appointments</div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Vehicle</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Est. Cost</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${appointments.isEmpty()}">
+                            <td colspan="7" style="text-align:center; color:var(--text-muted); padding:2rem;">
+                                No appointments booked yet.
+                            </td>
+                        </tr>
+                        <tr th:each="appt, stat : ${appointments}">
+                            <td th:text="${stat.count}"></td>
+                            <td th:text="${appt.vehicle.make + ' ' + appt.vehicle.model}"></td>
+                            <td th:text="${appt.serviceType.name}"></td>
+                            <td th:text="${appt.appointmentDate}"></td>
+                            <td th:text="'₹' + ${appt.serviceType.estimatedCost}"></td>
+                            <td th:text="${appt.notes != null ? appt.notes : '-'}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="'badge-' + ${appt.status.name().toLowerCase()}"
+                                      th:text="${appt.status}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    // Set today as minimum date for appointment booking
+    var today = new Date().toISOString().split('T')[0];
+    var dateInput = document.getElementById('appointmentDate');
+    if (dateInput) dateInput.setAttribute('min', today);
+</script>
+</body>
+</html>
